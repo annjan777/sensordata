@@ -1,0 +1,71 @@
+/* Body Styling */
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #f4f4f4;
+    text-align: center;
+    margin: 0;
+    padding: 0;
+}
+
+/* Header Styling */
+h1 {
+    margin: 20px;
+}
+
+/* Dropdown Select Styling */
+select {
+    padding: 10px;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+/* Leak Level Indicator */
+#leak-level {
+    font-size: 36px;
+    font-weight: bold;
+    color: white;
+    background-color: #ff4c4c; /* Urgent red */
+    padding: 20px;
+    border-radius: 10px;
+    display: inline-block;
+    margin-bottom: 20px;
+}
+
+/* Emergency Stop Button Container */
+#emergency-stop-container {
+    position: relative;
+    width: 150px;
+    margin: 0 auto;
+}
+
+/* Emergency Stop Button Styling */
+#emergency-stop-container #emergency-stop-btn {
+    background-color: #d9534f !important; /* Force red background */
+    color: white;
+    padding: 15px 20px;
+    font-size: 18px;
+    border: none;
+    border-radius: 60%;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    cursor: pointer;
+    position: relative;
+    z-index: 2;
+}
+
+/* Active State for Emergency Button */
+#emergency-stop-container #emergency-stop-btn:active {
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Plastic Case for Emergency Button */
+#emergency-stop-container #emergency-stop-case {
+    background-color: #333;
+    width: 120px;
+    height: 40px;
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 10px;
+    z-index: 1;
+}

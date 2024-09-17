@@ -1,0 +1,130 @@
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Smart Pollution Trooper</title>
+    <link rel="stylesheet" type="text/css" href="{% static '/static/brokerdata/css/styles.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns@latest"></script>
+    <style>
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f4f4f4;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            margin: 20px;
+        }
+        select {
+            padding: 10px;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        #leak-level {
+            font-size: 36px;
+            font-weight: bold;
+            color: white;
+            background-color: #ff4c4c;
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        #emergency-stop-container {
+            position: relative;
+            width: 150px;
+            margin: 0 auto;
+        }
+        #emergency-stop-btn {
+            background-color: #d9534f;
+            color: white;
+            padding: 15px 20px;
+            font-size: 18px;
+            border: none;
+            border-radius: 50%;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            position: relative;
+            z-index: 2;
+        }
+        #emergency-stop-btn:active {
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        #emergency-stop-case {
+            background-color: #333;
+            width: 120px;
+            height: 40px;
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 10px;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+    <h1>Smart Pollution Trooper</h1>
+
+    <select id="location-select" onchange="loadLeakLevel()">
+        <option>Select the location</option>
+        {% for item in topics_with_locations %}
+        <option value="{{ item.topic }}">{{ item.location }}</option>
+        {% endfor %}
+    </select>
+
+    <div id="leak-level-container">
+        <div id="leak-level">Leak Level: --</div>
+    </div>
+
+    <div id="emergency-stop-container">
+        <div id="emergency-stop-case"></div>
+        <button id="emergency-stop-btn" onclick="triggerEmergencyStop()">Emergency Stop</button>
+    </div>
+
+    <script>
+        let leakLevelElement = document.getElementById('leak-level');
+
+        function loadLeakLevel() {
+            const topic = document.getElementById("location-select").value;
+            if (topic) {
+                const url = `/api/chartdata/${topic}/`;
+                console.log(`Fetching data for: ${url}`);
+
+                fetch(url)
+                    .then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! Status: ${response.status}`);
+                        }
+                        return response.json();
+                    })
+                    .then(data => {
+                        console.log('Fetched Data:', data);
+                        if (data.length === 0) {
+                            leakLevelElement.textContent = "Leak Level: --";
+                            return;
+                        }
+
+                        // Assume the latest data point is the current leak level
+                        const latestData = data[data.length - 1].data;
+                        leakLevelElement.textContent = `Leak Level: ${latestData}`;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching data:', error);
+                        leakLevelElement.textContent = "Leak Level: Error";
+                    });
+            } else {
+                leakLevelElement.textContent = "Leak Level: --";
+            }
+        }
+
+        function triggerEmergencyStop() {
+            alert("Emergency Stop Triggered! Gas supply will be cut off.");
+            // Here, you'd send an MQTT message or an API request to trigger the emergency stop in the system.
+        }
+    </script>
+</body>
+</html>
